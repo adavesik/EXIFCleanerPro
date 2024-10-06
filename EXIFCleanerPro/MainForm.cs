@@ -55,5 +55,9 @@ namespace EXIFCleanerPro
             this.Region = new Region(path);
         }
 
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

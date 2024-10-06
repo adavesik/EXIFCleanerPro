@@ -32,6 +32,15 @@
             pictureBox1 = new PictureBox();
             label1 = new Label();
             btnClose = new Button();
+            listView1 = new ListView();
+            FileName = new ColumnHeader();
+            FilePath = new ColumnHeader();
+            Size = new ColumnHeader();
+            EXIFPresent = new ColumnHeader();
+            btnAdd = new Button();
+            btnClear = new Button();
+            btnStart = new Button();
+            btnExit = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -84,12 +93,83 @@
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
             // 
+            // listView1
+            // 
+            listView1.Columns.AddRange(new ColumnHeader[] { FileName, FilePath, Size, EXIFPresent });
+            listView1.Location = new Point(12, 82);
+            listView1.Name = "listView1";
+            listView1.Size = new Size(443, 274);
+            listView1.TabIndex = 1;
+            listView1.UseCompatibleStateImageBehavior = false;
+            listView1.View = View.Details;
+            // 
+            // FileName
+            // 
+            FileName.Text = "File Name";
+            FileName.Width = 100;
+            // 
+            // FilePath
+            // 
+            FilePath.Text = "File Path";
+            FilePath.Width = 200;
+            // 
+            // Size
+            // 
+            Size.Text = "Size";
+            // 
+            // EXIFPresent
+            // 
+            EXIFPresent.Text = "EXIF Present";
+            EXIFPresent.Width = 80;
+            // 
+            // btnAdd
+            // 
+            btnAdd.Location = new Point(491, 99);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(75, 23);
+            btnAdd.TabIndex = 2;
+            btnAdd.Text = "Add";
+            btnAdd.UseVisualStyleBackColor = true;
+            // 
+            // btnClear
+            // 
+            btnClear.Location = new Point(491, 152);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new Size(75, 23);
+            btnClear.TabIndex = 3;
+            btnClear.Text = "Clear";
+            btnClear.UseVisualStyleBackColor = true;
+            // 
+            // btnStart
+            // 
+            btnStart.Location = new Point(491, 208);
+            btnStart.Name = "btnStart";
+            btnStart.Size = new Size(75, 23);
+            btnStart.TabIndex = 4;
+            btnStart.Text = "Start";
+            btnStart.UseVisualStyleBackColor = true;
+            // 
+            // btnExit
+            // 
+            btnExit.Location = new Point(491, 273);
+            btnExit.Name = "btnExit";
+            btnExit.Size = new Size(75, 23);
+            btnExit.TabIndex = 5;
+            btnExit.Text = "Exit";
+            btnExit.UseVisualStyleBackColor = true;
+            btnExit.Click += btnExit_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
             ClientSize = new Size(592, 405);
+            Controls.Add(btnExit);
+            Controls.Add(btnStart);
+            Controls.Add(btnClear);
+            Controls.Add(btnAdd);
+            Controls.Add(listView1);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "MainForm";
@@ -106,5 +186,14 @@
         private Button btnClose;
         private PictureBox pictureBox1;
         private Label label1;
+        private ListView listView1;
+        private ColumnHeader FileName;
+        private ColumnHeader FilePath;
+        private ColumnHeader Size;
+        private ColumnHeader EXIFPresent;
+        private Button btnAdd;
+        private Button btnClear;
+        private Button btnStart;
+        private Button btnExit;
     }
 }
