@@ -63,6 +63,16 @@ namespace EXIFCleanerPro.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close_10767183 {
+            get {
+                object obj = ResourceManager.GetObject("close_10767183", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap exifcleaner_logo_32x32 {
             get {
                 object obj = ResourceManager.GetObject("exifcleaner_logo_32x32", resourceCulture);
@@ -76,6 +86,26 @@ namespace EXIFCleanerPro.Properties {
         internal static System.Drawing.Bitmap folder_11538223_1_ {
             get {
                 object obj = ResourceManager.GetObject("folder_11538223(1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap play_257213 {
+            get {
+                object obj = ResourceManager.GetObject("play_257213", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap remove_9013644_1_ {
+            get {
+                object obj = ResourceManager.GetObject("remove_9013644(1)", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

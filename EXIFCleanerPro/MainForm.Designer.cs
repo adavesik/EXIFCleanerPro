@@ -154,20 +154,26 @@
             btnStart.FlatAppearance.MouseOverBackColor = Color.Cyan;
             btnStart.FlatStyle = FlatStyle.Flat;
             btnStart.ForeColor = SystemColors.Desktop;
+            btnStart.Image = Properties.Resources.play_257213;
             btnStart.Location = new Point(475, 212);
             btnStart.Name = "btnStart";
             btnStart.Size = new Size(105, 46);
             btnStart.TabIndex = 4;
             btnStart.Text = "Start";
+            btnStart.TextAlign = ContentAlignment.MiddleRight;
+            btnStart.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnStart.UseVisualStyleBackColor = false;
             // 
             // btnExit
             // 
+            btnExit.Image = Properties.Resources.close_10767183;
             btnExit.Location = new Point(475, 298);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(105, 30);
             btnExit.TabIndex = 5;
             btnExit.Text = "Exit";
+            btnExit.TextAlign = ContentAlignment.MiddleRight;
+            btnExit.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnExit.UseVisualStyleBackColor = true;
             btnExit.Click += btnExit_Click;
             // 
