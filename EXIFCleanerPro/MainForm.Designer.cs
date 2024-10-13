@@ -137,11 +137,14 @@
             // 
             // btnClear
             // 
+            btnClear.Image = Properties.Resources.remove_9013644_1_;
             btnClear.Location = new Point(475, 143);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(105, 30);
             btnClear.TabIndex = 3;
             btnClear.Text = "Clear";
+            btnClear.TextAlign = ContentAlignment.MiddleRight;
+            btnClear.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnClear.UseVisualStyleBackColor = true;
             // 
             // btnStart
