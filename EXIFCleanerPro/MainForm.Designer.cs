@@ -124,36 +124,45 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(491, 99);
+            btnAdd.BackgroundImageLayout = ImageLayout.None;
+            btnAdd.Image = Properties.Resources.ui_element_15768319;
+            btnAdd.ImageAlign = ContentAlignment.MiddleRight;
+            btnAdd.Location = new Point(475, 98);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(75, 23);
+            btnAdd.Size = new Size(105, 30);
             btnAdd.TabIndex = 2;
-            btnAdd.Text = "Add";
+            btnAdd.Text = "Add...";
+            btnAdd.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnAdd.UseVisualStyleBackColor = true;
             // 
             // btnClear
             // 
-            btnClear.Location = new Point(491, 152);
+            btnClear.Location = new Point(475, 143);
             btnClear.Name = "btnClear";
-            btnClear.Size = new Size(75, 23);
+            btnClear.Size = new Size(105, 30);
             btnClear.TabIndex = 3;
             btnClear.Text = "Clear";
             btnClear.UseVisualStyleBackColor = true;
             // 
             // btnStart
             // 
-            btnStart.Location = new Point(491, 208);
+            btnStart.BackColor = Color.DeepSkyBlue;
+            btnStart.FlatAppearance.BorderSize = 0;
+            btnStart.FlatAppearance.MouseOverBackColor = Color.Cyan;
+            btnStart.FlatStyle = FlatStyle.Flat;
+            btnStart.ForeColor = SystemColors.Desktop;
+            btnStart.Location = new Point(475, 212);
             btnStart.Name = "btnStart";
-            btnStart.Size = new Size(75, 23);
+            btnStart.Size = new Size(105, 46);
             btnStart.TabIndex = 4;
             btnStart.Text = "Start";
-            btnStart.UseVisualStyleBackColor = true;
+            btnStart.UseVisualStyleBackColor = false;
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(491, 273);
+            btnExit.Location = new Point(475, 298);
             btnExit.Name = "btnExit";
-            btnExit.Size = new Size(75, 23);
+            btnExit.Size = new Size(105, 30);
             btnExit.TabIndex = 5;
             btnExit.Text = "Exit";
             btnExit.UseVisualStyleBackColor = true;
