@@ -128,8 +128,11 @@
             // 
             // treeViewAvailable
             // 
+            treeViewAvailable.ImageIndex = 0;
+            treeViewAvailable.ImageList = imageList1;
             treeViewAvailable.Location = new Point(12, 24);
             treeViewAvailable.Name = "treeViewAvailable";
+            treeViewAvailable.SelectedImageIndex = 0;
             treeViewAvailable.Size = new Size(236, 322);
             treeViewAvailable.TabIndex = 8;
             // 

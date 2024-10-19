@@ -35,10 +35,19 @@ namespace EXIFCleanerPro.Services
             SHFILEINFO shinfo = new SHFILEINFO();
             uint flags = SHGFI_ICON | SHGFI_SMALLICON;
 
-            // If it's a folder, get folder icon; if it's a file, get file icon
+            // Call SHGetFileInfo to get the icon handle
             IntPtr iconHandle = SHGetFileInfo(path, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), flags);
 
+            // Check if the handle is valid
+            if (iconHandle == IntPtr.Zero)
+            {
+                // Return a default icon or null if the handle is invalid
+                return null;
+            }
+
+            // If the handle is valid, create an icon
             return Icon.FromHandle(shinfo.hIcon);
         }
+
     }
 }
