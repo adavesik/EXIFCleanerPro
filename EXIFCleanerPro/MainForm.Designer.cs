@@ -134,6 +134,7 @@
             btnAdd.Text = "Add...";
             btnAdd.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.Click += btnAdd_Click;
             // 
             // btnClear
             // 

@@ -1,3 +1,4 @@
+using EXIFCleanerPro.Forms;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 
@@ -58,6 +59,22 @@ namespace EXIFCleanerPro
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            using (AddFilesForm addFilesForm = new AddFilesForm())
+            {
+                // Show the dialog and check if OK was clicked
+                if (addFilesForm.ShowDialog() == DialogResult.OK)
+                {
+                    foreach (ListViewItem item in addFilesForm.listViewSelected.Items)
+                    {
+                        // Add the selected items to your main form's ListView
+                        //listViewImages.Items.Add((ListViewItem)item.Clone());
+                    }
+                }
+            }
         }
     }
 }
