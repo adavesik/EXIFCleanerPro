@@ -97,8 +97,13 @@
             // 
             // listViewImages
             // 
+            listViewImages.AllowDrop = true;
+            listViewImages.CheckBoxes = true;
             listViewImages.Columns.AddRange(new ColumnHeader[] { FileName, FilePath, Size, EXIFPresent });
+            listViewImages.FullRowSelect = true;
+            listViewImages.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewImages.Location = new Point(12, 82);
+            listViewImages.MultiSelect = false;
             listViewImages.Name = "listViewImages";
             listViewImages.Size = new Size(443, 249);
             listViewImages.TabIndex = 1;
