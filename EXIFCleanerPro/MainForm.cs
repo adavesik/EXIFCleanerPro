@@ -17,6 +17,9 @@ namespace EXIFCleanerPro
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HTCAPTION = 0x2;
 
+        private static readonly HashSet<string> allowedImageExtensions =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".jpg", ".jpeg", ".png" };
+
         public MainForm()
         {
             InitializeComponent();
@@ -63,16 +66,46 @@ namespace EXIFCleanerPro
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            using (AddFilesForm addFilesForm = new AddFilesForm())
+            // Show the folder browser dialog
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                // Show the dialog and check if OK was clicked
-                if (addFilesForm.ShowDialog() == DialogResult.OK)
+                // Get the selected folder path
+                string selectedFolder = folderBrowserDialog.SelectedPath;
+
+                // Optionally: Get all image files in the selected folder
+                string[] imageFiles = Directory.GetFiles(selectedFolder, "*.*", SearchOption.TopDirectoryOnly)
+                                              .Where(file => allowedImageExtensions.Contains(Path.GetExtension(file).ToLower()))
+                                              .ToArray();
+
+                // Add the folder or image files to your ListView
+                foreach (string file in imageFiles)
                 {
-                    foreach (ListViewItem item in addFilesForm.listViewSelected.Items)
-                    {
-                        // Add the selected items to your main form's ListView
-                        //listViewImages.Items.Add((ListViewItem)item.Clone());
-                    }
+                    ListViewItem item = new ListViewItem(Path.GetFileName(file));
+                    item.SubItems.Add(file);  // Optionally add full path as a sub-item
+                    listViewImages.Items.Add(item);
+                }
+            }
+        }
+
+        private void buttonAddFolder_Click(object sender, EventArgs e)
+        {
+            // Show the folder browser dialog
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Get the selected folder path
+                string selectedFolder = folderBrowserDialog.SelectedPath;
+
+                // Optionally: Get all image files in the selected folder
+                string[] imageFiles = Directory.GetFiles(selectedFolder, "*.*", SearchOption.TopDirectoryOnly)
+                                              .Where(file => allowedImageExtensions.Contains(Path.GetExtension(file).ToLower()))
+                                              .ToArray();
+
+                // Add the folder or image files to your ListView
+                foreach (string file in imageFiles)
+                {
+                    ListViewItem item = new ListViewItem(Path.GetFileName(file));
+                    item.SubItems.Add(file);  // Optionally add full path as a sub-item
+                    listViewImages.Items.Add(item);
                 }
             }
         }

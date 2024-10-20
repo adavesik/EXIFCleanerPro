@@ -93,6 +93,16 @@ namespace EXIFCleanerPro.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap new_folder {
+            get {
+                object obj = ResourceManager.GetObject("new-folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap play_257213 {
             get {
                 object obj = ResourceManager.GetObject("play_257213", resourceCulture);

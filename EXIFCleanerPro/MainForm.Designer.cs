@@ -32,7 +32,7 @@
             pictureBox1 = new PictureBox();
             label1 = new Label();
             btnClose = new Button();
-            listView1 = new ListView();
+            listViewImages = new ListView();
             FileName = new ColumnHeader();
             FilePath = new ColumnHeader();
             Size = new ColumnHeader();
@@ -41,6 +41,8 @@
             btnClear = new Button();
             btnStart = new Button();
             btnExit = new Button();
+            folderBrowserDialog = new FolderBrowserDialog();
+            buttonAddFolder = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -93,15 +95,15 @@
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
             // 
-            // listView1
+            // listViewImages
             // 
-            listView1.Columns.AddRange(new ColumnHeader[] { FileName, FilePath, Size, EXIFPresent });
-            listView1.Location = new Point(12, 82);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(443, 274);
-            listView1.TabIndex = 1;
-            listView1.UseCompatibleStateImageBehavior = false;
-            listView1.View = View.Details;
+            listViewImages.Columns.AddRange(new ColumnHeader[] { FileName, FilePath, Size, EXIFPresent });
+            listViewImages.Location = new Point(12, 82);
+            listViewImages.Name = "listViewImages";
+            listViewImages.Size = new Size(443, 249);
+            listViewImages.TabIndex = 1;
+            listViewImages.UseCompatibleStateImageBehavior = false;
+            listViewImages.View = View.Details;
             // 
             // FileName
             // 
@@ -127,11 +129,11 @@
             btnAdd.BackgroundImageLayout = ImageLayout.None;
             btnAdd.Image = Properties.Resources.ui_element_15768319;
             btnAdd.ImageAlign = ContentAlignment.MiddleRight;
-            btnAdd.Location = new Point(475, 98);
+            btnAdd.Location = new Point(475, 82);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(105, 30);
             btnAdd.TabIndex = 2;
-            btnAdd.Text = "Add...";
+            btnAdd.Text = "Add Images";
             btnAdd.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnAdd.UseVisualStyleBackColor = true;
             btnAdd.Click += btnAdd_Click;
@@ -139,7 +141,7 @@
             // btnClear
             // 
             btnClear.Image = Properties.Resources.remove_9013644_1_;
-            btnClear.Location = new Point(475, 143);
+            btnClear.Location = new Point(475, 187);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(105, 30);
             btnClear.TabIndex = 3;
@@ -156,7 +158,7 @@
             btnStart.FlatStyle = FlatStyle.Flat;
             btnStart.ForeColor = SystemColors.Desktop;
             btnStart.Image = Properties.Resources.play_257213;
-            btnStart.Location = new Point(475, 212);
+            btnStart.Location = new Point(475, 234);
             btnStart.Name = "btnStart";
             btnStart.Size = new Size(105, 46);
             btnStart.TabIndex = 4;
@@ -168,7 +170,7 @@
             // btnExit
             // 
             btnExit.Image = Properties.Resources.close_10767183;
-            btnExit.Location = new Point(475, 298);
+            btnExit.Location = new Point(475, 301);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(105, 30);
             btnExit.TabIndex = 5;
@@ -178,17 +180,32 @@
             btnExit.UseVisualStyleBackColor = true;
             btnExit.Click += btnExit_Click;
             // 
+            // buttonAddFolder
+            // 
+            buttonAddFolder.BackgroundImageLayout = ImageLayout.None;
+            buttonAddFolder.Image = Properties.Resources.new_folder;
+            buttonAddFolder.ImageAlign = ContentAlignment.MiddleRight;
+            buttonAddFolder.Location = new Point(475, 118);
+            buttonAddFolder.Name = "buttonAddFolder";
+            buttonAddFolder.Size = new Size(105, 30);
+            buttonAddFolder.TabIndex = 6;
+            buttonAddFolder.Text = "Add Folder";
+            buttonAddFolder.TextImageRelation = TextImageRelation.ImageBeforeText;
+            buttonAddFolder.UseVisualStyleBackColor = true;
+            buttonAddFolder.Click += buttonAddFolder_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
             ClientSize = new Size(592, 405);
+            Controls.Add(buttonAddFolder);
             Controls.Add(btnExit);
             Controls.Add(btnStart);
             Controls.Add(btnClear);
             Controls.Add(btnAdd);
-            Controls.Add(listView1);
+            Controls.Add(listViewImages);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "MainForm";
@@ -205,7 +222,7 @@
         private Button btnClose;
         private PictureBox pictureBox1;
         private Label label1;
-        private ListView listView1;
+        private ListView listViewImages;
         private ColumnHeader FileName;
         private ColumnHeader FilePath;
         private ColumnHeader Size;
@@ -214,5 +231,7 @@
         private Button btnClear;
         private Button btnStart;
         private Button btnExit;
+        private FolderBrowserDialog folderBrowserDialog;
+        private Button buttonAddFolder;
     }
 }
