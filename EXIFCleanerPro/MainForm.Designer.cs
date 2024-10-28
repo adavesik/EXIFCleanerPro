@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             panel1 = new Panel();
             pictureBox1 = new PictureBox();
             label1 = new Label();
@@ -36,13 +37,14 @@
             FileName = new ColumnHeader();
             FilePath = new ColumnHeader();
             Size = new ColumnHeader();
-            EXIFPresent = new ColumnHeader();
             btnAdd = new Button();
             btnClear = new Button();
             btnStart = new Button();
             btnExit = new Button();
             folderBrowserDialog = new FolderBrowserDialog();
             buttonAddFolder = new Button();
+            openFileDialog = new OpenFileDialog();
+            exifToolTip = new ToolTip(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -99,7 +101,7 @@
             // 
             listViewImages.AllowDrop = true;
             listViewImages.CheckBoxes = true;
-            listViewImages.Columns.AddRange(new ColumnHeader[] { FileName, FilePath, Size, EXIFPresent });
+            listViewImages.Columns.AddRange(new ColumnHeader[] { FileName, FilePath, Size });
             listViewImages.FullRowSelect = true;
             listViewImages.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listViewImages.Location = new Point(12, 82);
@@ -109,6 +111,8 @@
             listViewImages.TabIndex = 1;
             listViewImages.UseCompatibleStateImageBehavior = false;
             listViewImages.View = View.Details;
+            listViewImages.MouseClick += listViewImages_MouseClick;
+            listViewImages.MouseDoubleClick += listViewImages_MouseDoubleClick;
             // 
             // FileName
             // 
@@ -118,16 +122,12 @@
             // FilePath
             // 
             FilePath.Text = "File Path";
-            FilePath.Width = 200;
+            FilePath.Width = 260;
             // 
             // Size
             // 
             Size.Text = "Size";
-            // 
-            // EXIFPresent
-            // 
-            EXIFPresent.Text = "EXIF Present";
-            EXIFPresent.Width = 80;
+            Size.Width = 80;
             // 
             // btnAdd
             // 
@@ -199,6 +199,10 @@
             buttonAddFolder.UseVisualStyleBackColor = true;
             buttonAddFolder.Click += buttonAddFolder_Click;
             // 
+            // openFileDialog
+            // 
+            openFileDialog.FileName = "openFileDialog1";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -231,12 +235,13 @@
         private ColumnHeader FileName;
         private ColumnHeader FilePath;
         private ColumnHeader Size;
-        private ColumnHeader EXIFPresent;
         private Button btnAdd;
         private Button btnClear;
         private Button btnStart;
         private Button btnExit;
         private FolderBrowserDialog folderBrowserDialog;
         private Button buttonAddFolder;
+        private OpenFileDialog openFileDialog;
+        private ToolTip exifToolTip;
     }
 }

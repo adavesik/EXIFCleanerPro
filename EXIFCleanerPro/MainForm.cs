@@ -1,4 +1,5 @@
 using EXIFCleanerPro.Forms;
+using EXIFCleanerPro.Services;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 
@@ -66,23 +67,35 @@ namespace EXIFCleanerPro
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            // Show the folder browser dialog
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                // Get the selected folder path
-                string selectedFolder = folderBrowserDialog.SelectedPath;
+                // Allow the selection of multiple files
+                openFileDialog.Multiselect = true;
 
-                // Optionally: Get all image files in the selected folder
-                string[] imageFiles = Directory.GetFiles(selectedFolder, "*.*", SearchOption.TopDirectoryOnly)
-                                              .Where(file => allowedImageExtensions.Contains(Path.GetExtension(file).ToLower()))
-                                              .ToArray();
+                // Set the file filter to image files
+                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff|All Files|*.*";
 
-                // Add the folder or image files to your ListView
-                foreach (string file in imageFiles)
+                // Show the dialog and check if the user clicked OK
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    ListViewItem item = new ListViewItem(Path.GetFileName(file));
-                    item.SubItems.Add(file);  // Optionally add full path as a sub-item
-                    listViewImages.Items.Add(item);
+                    // Get the selected files
+                    string[] selectedFiles = openFileDialog.FileNames;
+
+                    // Add each selected file to your ListView or other UI
+                    foreach (string file in selectedFiles)
+                    {
+                        // Get the file size in KB
+                        long fileSizeInBytes = new FileInfo(file).Length;
+                        long fileSizeInKB = fileSizeInBytes / 1024;  // Convert to KB
+
+                        ListViewItem item = new ListViewItem(Path.GetFileName(file))
+                        {
+                            Checked = true
+                        };
+                        item.SubItems.Add(file);
+                        item.SubItems.Add($"{fileSizeInKB} KB");
+                        listViewImages.Items.Add(item);
+                    }
                 }
             }
         }
@@ -109,5 +122,43 @@ namespace EXIFCleanerPro
                 }
             }
         }
+
+        private void ShowExifForm(string filePath)
+        {
+            ExifInfoForm exifForm = new ExifInfoForm();
+            exifForm.LoadExifData(filePath);
+            exifForm.ShowDialog();
+        }
+
+        private void listViewImages_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // Check if an item is selected
+            if (listViewImages.SelectedItems.Count > 0)
+            {
+                // Get the file path from the selected item
+                string filePath = listViewImages.SelectedItems[0].SubItems[1].Text;
+
+                // Show EXIF information in a new form
+                ShowExifForm(filePath);
+            }
+        }
+
+        private void listViewImages_MouseClick(object sender, MouseEventArgs e)
+        {
+            ListViewItem item = listViewImages.GetItemAt(e.X, e.Y);
+
+            if (item != null)
+            {
+                // Define the bounds for the checkbox area
+                Rectangle checkBoxBounds = new Rectangle(item.Bounds.Left, item.Bounds.Top, 16, item.Bounds.Height);
+
+                // If the click is outside the checkbox area, prevent the checkbox toggle
+                if (!checkBoxBounds.Contains(e.Location))
+                {
+                    item.Checked = !item.Checked;  // Revert the checkbox state
+                }
+            }
+        }
+
     }
 }
