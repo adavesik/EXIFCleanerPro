@@ -45,6 +45,8 @@
             buttonAddFolder = new Button();
             openFileDialog = new OpenFileDialog();
             exifToolTip = new ToolTip(components);
+            progressBar = new ProgressBar();
+            statusLabel = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -207,19 +209,17 @@
             // 
             // progressBar
             // 
-            progressBar = new ProgressBar();
-            progressBar.Location = new Point(12, 470);
+            progressBar.Location = new Point(12, 363);
             progressBar.Name = "progressBar";
             progressBar.Size = new Size(568, 20);
             progressBar.TabIndex = 7;
             // 
             // statusLabel
             // 
-            statusLabel = new Label();
             statusLabel.AutoSize = true;
-            statusLabel.Location = new Point(12, 450);
+            statusLabel.Location = new Point(12, 386);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(35, 15);
+            statusLabel.Size = new Size(39, 15);
             statusLabel.TabIndex = 8;
             statusLabel.Text = "Ready";
             // 
@@ -228,7 +228,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(592, 500);
+            ClientSize = new Size(592, 416);
             Controls.Add(buttonAddFolder);
             Controls.Add(btnExit);
             Controls.Add(btnStart);
@@ -245,6 +245,7 @@
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
