@@ -65,6 +65,12 @@ namespace EXIFCleanerPro
             Application.Exit();
         }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            listViewImages.Items.Clear();
+            statusLabel.Text = "List cleared.";
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -160,5 +166,47 @@ namespace EXIFCleanerPro
             }
         }
 
+        private async void btnStart_Click(object sender, EventArgs e)
+        {
+            var checkedItems = listViewImages.Items.Cast<ListViewItem>().Where(item => item.Checked).ToList();
+            if (checkedItems.Count == 0)
+            {
+                MessageBox.Show("Please select at least one image to clean.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            progressBar.Value = 0;
+            progressBar.Maximum = checkedItems.Count;
+            statusLabel.Text = "Cleaning EXIF data...";
+            btnStart.Enabled = false;
+
+            int processed = 0;
+            foreach (var item in checkedItems)
+            {
+                string filePath = item.SubItems[1].Text;
+                try
+                {
+                    // For now, overwrite the file. Later, add option for backup/output dir
+                    string tempPath = Path.GetTempFileName();
+                    if (ExifHelper.CleanExifData(filePath, tempPath))
+                    {
+                        File.Copy(tempPath, filePath, true);
+                        File.Delete(tempPath);
+                        statusLabel.Text = $"Cleaned: {Path.GetFileName(filePath)}";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error cleaning {Path.GetFileName(filePath)}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                processed++;
+                progressBar.Value = processed;
+                await Task.Delay(10); // Small delay to update UI
+            }
+
+            statusLabel.Text = "Cleaning completed.";
+            btnStart.Enabled = true;
+        }
     }
 }

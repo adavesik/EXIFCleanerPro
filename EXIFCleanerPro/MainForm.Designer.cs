@@ -154,6 +154,7 @@
             btnClear.TextAlign = ContentAlignment.MiddleRight;
             btnClear.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
             // btnStart
             // 
@@ -171,6 +172,7 @@
             btnStart.TextAlign = ContentAlignment.MiddleRight;
             btnStart.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnStart.UseVisualStyleBackColor = false;
+            btnStart.Click += btnStart_Click;
             // 
             // btnExit
             // 
@@ -203,12 +205,30 @@
             // 
             openFileDialog.FileName = "openFileDialog1";
             // 
+            // progressBar
+            // 
+            progressBar = new ProgressBar();
+            progressBar.Location = new Point(12, 470);
+            progressBar.Name = "progressBar";
+            progressBar.Size = new Size(568, 20);
+            progressBar.TabIndex = 7;
+            // 
+            // statusLabel
+            // 
+            statusLabel = new Label();
+            statusLabel.AutoSize = true;
+            statusLabel.Location = new Point(12, 450);
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(35, 15);
+            statusLabel.TabIndex = 8;
+            statusLabel.Text = "Ready";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(592, 405);
+            ClientSize = new Size(592, 500);
             Controls.Add(buttonAddFolder);
             Controls.Add(btnExit);
             Controls.Add(btnStart);
@@ -216,6 +236,8 @@
             Controls.Add(btnAdd);
             Controls.Add(listViewImages);
             Controls.Add(panel1);
+            Controls.Add(progressBar);
+            Controls.Add(statusLabel);
             FormBorderStyle = FormBorderStyle.None;
             Name = "MainForm";
             MouseDown += Form_MouseDown;
@@ -243,5 +265,7 @@
         private Button buttonAddFolder;
         private OpenFileDialog openFileDialog;
         private ToolTip exifToolTip;
+        private ProgressBar progressBar;
+        private Label statusLabel;
     }
 }
