@@ -92,6 +92,42 @@ public sealed class ImageCleaningServiceTests : IDisposable
         Assert.True(comparison.RemovedSensitiveEntryCount > 0);
     }
 
+    [Fact]
+    public async Task JpegCleaningPreservesCompressedPixelsAndDoesNotInflateFile()
+    {
+        string input = CreateJpegWithDescription("lossless.jpg");
+        byte[] originalScan = GetJpegScanData(input);
+        long originalSize = new FileInfo(input).Length;
+        ImageCleaningService service = new();
+
+        CleaningResult result = await service.CleanAsync(
+            input,
+            new CleaningOptions(OutputMode.CleanedCopy, null),
+            CancellationToken.None);
+
+        Assert.True(result.Success, result.ErrorMessage);
+        Assert.Equal(originalScan, GetJpegScanData(result.OutputPath!));
+        Assert.True(new FileInfo(result.OutputPath!).Length <= originalSize);
+    }
+
+    [Fact]
+    public async Task JpegCleaningPreservesOrientationWithoutKeepingOtherExif()
+    {
+        string input = CreateJpegWithDescription("oriented.jpg", orientation: 6);
+        ImageCleaningService service = new();
+
+        CleaningResult result = await service.CleanAsync(
+            input,
+            new CleaningOptions(OutputMode.CleanedCopy, null),
+            CancellationToken.None);
+        var tags = ImageMetadataReader.ReadMetadata(result.OutputPath!).SelectMany(directory => directory.Tags).ToList();
+
+        Assert.True(result.Success, result.ErrorMessage);
+        Assert.Contains(tags, tag => tag.Name.Contains("Orientation", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(tags, tag => tag.Name.Contains("Description", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(GetJpegScanData(input), GetJpegScanData(result.OutputPath!));
+    }
+
     public void Dispose() => Directory.Delete(testDirectory, true);
 
     private string CreatePng(string name)
@@ -104,7 +140,7 @@ public sealed class ImageCleaningServiceTests : IDisposable
         return path;
     }
 
-    private string CreateJpegWithDescription(string name)
+    private string CreateJpegWithDescription(string name, ushort? orientation = null)
     {
         string path = Path.Combine(testDirectory, name);
         using (Bitmap bitmap = new(12, 12))
@@ -116,7 +152,7 @@ public sealed class ImageCleaningServiceTests : IDisposable
 
         byte[] jpeg = File.ReadAllBytes(path);
         byte[] description = "hello\0"u8.ToArray();
-        byte[] tiff = BuildMinimalExifTiff(description);
+        byte[] tiff = BuildMinimalExifTiff(description, orientation);
         byte[] payload = "Exif\0\0"u8.ToArray().Concat(tiff).ToArray();
         int segmentLength = payload.Length + 2;
         byte[] app1 = [0xFF, 0xE1, (byte)(segmentLength >> 8), (byte)segmentLength, .. payload];
@@ -125,7 +161,7 @@ public sealed class ImageCleaningServiceTests : IDisposable
         return path;
     }
 
-    private static byte[] BuildMinimalExifTiff(byte[] description)
+    private static byte[] BuildMinimalExifTiff(byte[] description, ushort? orientation)
     {
         using MemoryStream stream = new();
         using BinaryWriter writer = new(stream);
@@ -133,13 +169,35 @@ public sealed class ImageCleaningServiceTests : IDisposable
         writer.Write((byte)'I');
         writer.Write((ushort)42);
         writer.Write(8u);
-        writer.Write((ushort)1);
+        writer.Write(orientation is null ? (ushort)1 : (ushort)2);
         writer.Write((ushort)0x010E);
         writer.Write((ushort)2);
         writer.Write((uint)description.Length);
-        writer.Write(26u);
+        writer.Write(orientation is null ? 26u : 38u);
+        if (orientation is not null)
+        {
+            writer.Write((ushort)0x0112);
+            writer.Write((ushort)3);
+            writer.Write(1u);
+            writer.Write((uint)orientation.Value);
+        }
+
         writer.Write(0u);
         writer.Write(description);
         return stream.ToArray();
+    }
+
+    private static byte[] GetJpegScanData(string path)
+    {
+        byte[] bytes = File.ReadAllBytes(path);
+        for (int index = 2; index < bytes.Length - 1; index++)
+        {
+            if (bytes[index] == 0xFF && bytes[index + 1] == 0xDA)
+            {
+                return bytes.AsSpan(index).ToArray();
+            }
+        }
+
+        throw new InvalidDataException("JPEG scan marker not found.");
     }
 }
