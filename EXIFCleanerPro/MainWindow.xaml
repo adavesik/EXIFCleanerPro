@@ -120,7 +120,7 @@
                     <WrapPanel Margin="16,4,16,8">
                         <Border CornerRadius="8" Padding="8,4" Margin="0,0,6,6" BorderThickness="1" BorderBrush="#D45B5B"
                                 Visibility="{Binding SelectedItem.HasGps, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="GPS" Foreground="#D45B5B" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SelectedItem.GpsBadgeText}" Foreground="#D45B5B" FontWeight="SemiBold" />
                         </Border>
                         <Border CornerRadius="8" Padding="8,4" Margin="0,0,6,6" BorderThickness="1" BorderBrush="#157F8C"
                                 Visibility="{Binding SelectedItem.HasCamera, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -147,11 +147,11 @@
                               HorizontalAlignment="Left" Margin="9,0,0,0" IsHitTestVisible="False" />
                     </Grid>
 
-                    <ListView Margin="16,0" Height="220"
+                    <ListView Margin="16,0"
                               ItemsSource="{Binding MetadataEntries}"
                               SelectedItem="{Binding SelectedMetadataEntry}"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.VerticalScrollBarVisibility="Disabled"
                               AutomationProperties.Name="Image metadata">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">

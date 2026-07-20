@@ -15,6 +15,14 @@ internal sealed record MetadataEntry(
     public string DisplayValue => string.IsNullOrWhiteSpace(Value) ? "No readable value" : Value;
     public string DisplayExplanation => Explanation ?? $"Technical metadata stored as {Tag}.";
     public string ClipboardText => $"{Group} — {DisplayName}: {Value}";
+
+    public bool MatchesSearch(string search) =>
+        Group.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+        Tag.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+        Value.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+        DisplayName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+        DisplayExplanation.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+        (PrivacyCategory?.ToString().Contains(search, StringComparison.OrdinalIgnoreCase) ?? false);
 }
 
 internal sealed record MetadataResult(

@@ -65,9 +65,14 @@ internal partial class ImageQueueItem : ObservableObject
 
     public bool HasComparison => Comparison is not null;
     public bool HasMap => MapUri is not null;
+    public string GpsBadgeText => HasMap ? "GPS coordinates" : "Location metadata";
 
     partial void OnComparisonChanged(MetadataComparison? value) => OnPropertyChanged(nameof(HasComparison));
-    partial void OnMapUriChanged(Uri? value) => OnPropertyChanged(nameof(HasMap));
+    partial void OnMapUriChanged(Uri? value)
+    {
+        OnPropertyChanged(nameof(HasMap));
+        OnPropertyChanged(nameof(GpsBadgeText));
+    }
     partial void OnStatusChanged(QueueItemStatus value) => OnPropertyChanged(nameof(StatusText));
 
     private static string FormatSize(long bytes)

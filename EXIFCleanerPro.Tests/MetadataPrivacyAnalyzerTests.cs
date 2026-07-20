@@ -97,6 +97,32 @@ public sealed class MetadataPrivacyAnalyzerTests
         Assert.Single(result.Assessment.Findings);
     }
 
+    [Fact]
+    public void SearchMatchesHumanFriendlyMetadataName()
+    {
+        MetadataInterpretation result = MetadataPrivacyAnalyzer.Interpret(
+        [
+            new MetadataEntry("XMP", "Location", "Madrid")
+        ]);
+
+        MetadataEntry entry = Assert.Single(result.Entries);
+        Assert.DoesNotContain("gps", entry.Tag, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("gps", entry.Group, StringComparison.OrdinalIgnoreCase);
+        Assert.True(entry.MatchesSearch("gps"));
+    }
+
+    [Fact]
+    public void EmptyLocationTagDoesNotTriggerGpsWarning()
+    {
+        MetadataInterpretation result = MetadataPrivacyAnalyzer.Interpret(
+        [
+            new MetadataEntry("XMP", "Location", string.Empty)
+        ]);
+
+        Assert.Equal(0, result.Assessment.Score);
+        Assert.False(result.Entries[0].IsSensitive);
+    }
+
     private static MetadataResult CreateResult(params MetadataEntry[] raw)
     {
         MetadataInterpretation interpretation = MetadataPrivacyAnalyzer.Interpret(raw);

@@ -735,10 +735,7 @@ internal partial class MainViewModel : ObservableObject
         if (!string.IsNullOrWhiteSpace(MetadataSearchText))
         {
             string search = MetadataSearchText.Trim();
-            entries = entries.Where(entry =>
-                entry.Group.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                entry.Tag.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                entry.Value.Contains(search, StringComparison.OrdinalIgnoreCase));
+            entries = entries.Where(entry => entry.MatchesSearch(search));
         }
 
         MetadataEntries.Clear();

@@ -156,6 +156,7 @@ internal static class MetadataPrivacyAnalyzer
         candidates.Any(candidate => Contains(value, candidate));
 
     private static bool IsLocationEntry(MetadataEntry entry) =>
+        !string.IsNullOrWhiteSpace(entry.Value) &&
         ContainsAny(entry.Tag, "gps coordinates", "latitude", "longitude", "altitude", "location");
 
     private static string GetFriendlyName(MetadataRule rule, MetadataEntry entry)
