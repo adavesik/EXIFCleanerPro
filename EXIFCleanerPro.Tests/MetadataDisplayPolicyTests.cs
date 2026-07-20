@@ -23,4 +23,11 @@ public sealed class MetadataDisplayPolicyTests
     {
         Assert.False(MetadataDisplayPolicy.IsAdvancedOnly("Exif IFD0", "Model", "Canon EOS R6"));
     }
+
+    [Fact]
+    public void IccProfileIsPrivacyNeutral()
+    {
+        Assert.True(MetadataDisplayPolicy.IsPrivacyNeutralGroup("ICC Profile"));
+        Assert.False(MetadataDisplayPolicy.IsPrivacyNeutralGroup("Exif IFD0"));
+    }
 }

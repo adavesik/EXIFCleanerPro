@@ -2,9 +2,12 @@ namespace EXIFCleanerPro.Services;
 
 internal static class MetadataDisplayPolicy
 {
+    public static bool IsPrivacyNeutralGroup(string group) =>
+        group.Contains("ICC Profile", StringComparison.OrdinalIgnoreCase);
+
     public static bool IsAdvancedOnly(string group, string tag, string value)
     {
-        if (group.Contains("ICC Profile", StringComparison.OrdinalIgnoreCase))
+        if (IsPrivacyNeutralGroup(group))
         {
             return true;
         }

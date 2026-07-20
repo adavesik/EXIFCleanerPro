@@ -77,6 +77,12 @@ internal static class MetadataPrivacyAnalyzer
 
         foreach (MetadataEntry entry in source)
         {
+            if (MetadataDisplayPolicy.IsPrivacyNeutralGroup(entry.Group))
+            {
+                entries.Add(entry);
+                continue;
+            }
+
             MetadataRule? rule = Rules.FirstOrDefault(candidate => candidate.Matches(entry));
             if (rule is null)
             {

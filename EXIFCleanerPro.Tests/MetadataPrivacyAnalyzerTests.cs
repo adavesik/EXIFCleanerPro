@@ -140,6 +140,37 @@ public sealed class MetadataPrivacyAnalyzerTests
         Assert.Single(result.Entries, entry => entry.MatchesFilter(MetadataFilter.Software));
     }
 
+    [Fact]
+    public void IccColorProfileFieldsDoNotCreatePrivacyRisk()
+    {
+        MetadataInterpretation result = MetadataPrivacyAnalyzer.Interpret(
+        [
+            new MetadataEntry("ICC Profile", "Profile Copyright", "Copyright ICC vendor", IsAdvancedOnly: true),
+            new MetadataEntry("ICC Profile", "Profile Description", "sRGB profile", IsAdvancedOnly: true),
+            new MetadataEntry("ICC Profile", "Profile Date/Time", "2026:07:20 12:30:00", IsAdvancedOnly: true),
+            new MetadataEntry("ICC Profile", "Device Model", "Display profile", IsAdvancedOnly: true)
+        ]);
+
+        Assert.Equal(0, result.Assessment.Score);
+        Assert.Empty(result.Assessment.Findings);
+        Assert.All(result.Entries, entry => Assert.False(entry.IsSensitive));
+    }
+
+    [Fact]
+    public void VerificationPassesWhenOnlyIccColorProfileFieldsRemain()
+    {
+        MetadataResult before = CreateResult(new MetadataEntry("Exif IFD0", "Software", "Editor"));
+        MetadataResult after = CreateResult(
+            new MetadataEntry("ICC Profile", "Profile Copyright", "Copyright ICC vendor", IsAdvancedOnly: true),
+            new MetadataEntry("ICC Profile", "Profile Description", "sRGB profile", IsAdvancedOnly: true),
+            new MetadataEntry("ICC Profile", "Device Model", "Display profile", IsAdvancedOnly: true));
+
+        MetadataComparison comparison = MetadataPrivacyAnalyzer.Compare(before, after);
+
+        Assert.True(comparison.VerificationPassed);
+        Assert.Equal(0, comparison.AfterSensitiveEntryCount);
+    }
+
     private static MetadataResult CreateResult(params MetadataEntry[] raw)
     {
         MetadataInterpretation interpretation = MetadataPrivacyAnalyzer.Interpret(raw);
