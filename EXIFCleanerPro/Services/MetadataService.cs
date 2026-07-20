@@ -1,5 +1,6 @@
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
+using System.Globalization;
 
 namespace EXIFCleanerPro.Services;
 
@@ -12,7 +13,6 @@ internal sealed class MetadataService : IMetadataService
     {
         var directories = ImageMetadataReader.ReadMetadata(filePath);
         List<MetadataEntry> entries = [];
-        bool hasGps = false;
         bool hasCamera = false;
         bool hasDate = false;
         bool hasSoftware = false;
@@ -20,8 +20,6 @@ internal sealed class MetadataService : IMetadataService
         foreach (var directory in directories)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            hasGps |= directory.Name.Contains("GPS", StringComparison.OrdinalIgnoreCase);
-
             foreach (var tag in directory.Tags)
             {
                 string tagName = tag.Name;
@@ -40,7 +38,22 @@ internal sealed class MetadataService : IMetadataService
 
         GpsDirectory? gpsDirectory = directories.OfType<GpsDirectory>().FirstOrDefault();
         GeoLocation? location = gpsDirectory?.GetGeoLocation();
+        double? latitude = null;
+        double? longitude = null;
+        if (location is GeoLocation coordinates &&
+            double.IsFinite(coordinates.Latitude) &&
+            double.IsFinite(coordinates.Longitude) &&
+            coordinates.Latitude is >= -90 and <= 90 &&
+            coordinates.Longitude is >= -180 and <= 180)
+        {
+            latitude = coordinates.Latitude;
+            longitude = coordinates.Longitude;
+            string coordinateValue = $"{coordinates.Latitude.ToString("0.######", CultureInfo.InvariantCulture)}, {coordinates.Longitude.ToString("0.######", CultureInfo.InvariantCulture)}";
+            entries.Insert(0, new MetadataEntry("GPS", "GPS Coordinates", coordinateValue));
+        }
+
         MetadataInterpretation interpretation = MetadataPrivacyAnalyzer.Interpret(entries);
+        bool hasGps = interpretation.Entries.Any(entry => entry.PrivacyCategory == PrivacyCategory.Location);
         return new MetadataResult(
             interpretation.Entries,
             hasGps,
@@ -48,7 +61,7 @@ internal sealed class MetadataService : IMetadataService
             hasDate,
             hasSoftware,
             interpretation.Assessment,
-            location?.Latitude,
-            location?.Longitude);
+            latitude,
+            longitude);
     }
 }

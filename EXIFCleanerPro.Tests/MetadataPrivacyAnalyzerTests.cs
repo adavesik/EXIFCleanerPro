@@ -22,7 +22,7 @@ public sealed class MetadataPrivacyAnalyzerTests
         Assert.Equal(PrivacyRiskLevel.Critical, result.Assessment.Level);
         Assert.Equal(5, result.Assessment.Findings.Count);
         Assert.All(result.Entries, entry => Assert.True(entry.IsSensitive));
-        Assert.Equal("GPS location", result.Entries[0].DisplayName);
+        Assert.Equal("GPS latitude", result.Entries[0].DisplayName);
         Assert.Contains(result.Assessment.Categories, category => category.Category == PrivacyCategory.Location);
     }
 
@@ -66,6 +66,35 @@ public sealed class MetadataPrivacyAnalyzerTests
 
         Assert.Equal(0, result.Assessment.Score);
         Assert.Empty(result.Assessment.Findings);
+    }
+
+    [Fact]
+    public void GpsVersionDirectoryDoesNotClaimPreciseLocation()
+    {
+        MetadataInterpretation result = MetadataPrivacyAnalyzer.Interpret(
+        [
+            new MetadataEntry("GPS", "GPS Version ID", "2.3.0.0")
+        ]);
+
+        Assert.Equal(0, result.Assessment.Score);
+        Assert.Empty(result.Assessment.Findings);
+        Assert.False(result.Entries[0].IsSensitive);
+    }
+
+    [Fact]
+    public void GpsCoordinatePartsKeepDistinctFriendlyNamesAndValues()
+    {
+        MetadataInterpretation result = MetadataPrivacyAnalyzer.Interpret(
+        [
+            new MetadataEntry("GPS", "GPS Latitude", "40.4168"),
+            new MetadataEntry("GPS", "GPS Longitude", "-3.7038")
+        ]);
+
+        Assert.Equal("GPS latitude", result.Entries[0].DisplayName);
+        Assert.Equal("40.4168", result.Entries[0].DisplayValue);
+        Assert.Equal("GPS longitude", result.Entries[1].DisplayName);
+        Assert.Equal("-3.7038", result.Entries[1].DisplayValue);
+        Assert.Single(result.Assessment.Findings);
     }
 
     private static MetadataResult CreateResult(params MetadataEntry[] raw)

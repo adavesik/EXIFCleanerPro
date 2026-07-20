@@ -12,7 +12,7 @@ internal static class MetadataPrivacyAnalyzer
             45,
             "GPS location",
             "This value contributes to the place where the image was captured.",
-            entry => Contains(entry.Group, "gps") || ContainsAny(entry.Tag, "gps", "latitude", "longitude", "altitude")),
+            IsLocationEntry),
         new(
             "device-id",
             "Device identifier",
@@ -86,8 +86,8 @@ internal static class MetadataPrivacyAnalyzer
 
             MetadataEntry interpreted = entry with
             {
-                FriendlyName = rule.FriendlyName,
-                Explanation = rule.EntryExplanation,
+                FriendlyName = GetFriendlyName(rule, entry),
+                Explanation = GetEntryExplanation(rule, entry),
                 PrivacyCategory = rule.Category,
                 IsSensitive = true
             };
@@ -154,6 +154,43 @@ internal static class MetadataPrivacyAnalyzer
 
     private static bool ContainsAny(string value, params string[] candidates) =>
         candidates.Any(candidate => Contains(value, candidate));
+
+    private static bool IsLocationEntry(MetadataEntry entry) =>
+        ContainsAny(entry.Tag, "gps coordinates", "latitude", "longitude", "altitude", "location");
+
+    private static string GetFriendlyName(MetadataRule rule, MetadataEntry entry)
+    {
+        if (rule.Key != "gps")
+        {
+            return rule.FriendlyName;
+        }
+
+        return entry.Tag switch
+        {
+            string tag when Contains(tag, "coordinates") => "GPS coordinates",
+            string tag when Contains(tag, "latitude") => "GPS latitude",
+            string tag when Contains(tag, "longitude") => "GPS longitude",
+            string tag when Contains(tag, "altitude") => "GPS altitude",
+            _ => "GPS location"
+        };
+    }
+
+    private static string GetEntryExplanation(MetadataRule rule, MetadataEntry entry)
+    {
+        if (rule.Key != "gps")
+        {
+            return rule.EntryExplanation;
+        }
+
+        return entry.Tag switch
+        {
+            string tag when Contains(tag, "coordinates") => "The combined latitude and longitude stored in this image.",
+            string tag when Contains(tag, "latitude") => "The north-south coordinate stored in this image.",
+            string tag when Contains(tag, "longitude") => "The east-west coordinate stored in this image.",
+            string tag when Contains(tag, "altitude") => "The recorded height above or below sea level.",
+            _ => rule.EntryExplanation
+        };
+    }
 
     private static bool IsTimelineEntry(MetadataEntry entry)
     {

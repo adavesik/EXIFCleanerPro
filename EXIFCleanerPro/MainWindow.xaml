@@ -150,15 +150,27 @@
                     <ListView Margin="16,0" Height="220"
                               ItemsSource="{Binding MetadataEntries}"
                               SelectedItem="{Binding SelectedMetadataEntry}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                               AutomationProperties.Name="Image metadata">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="2,5">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" Text="{Binding Group}" Opacity="0.55" FontSize="10" />
-                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
-                                    </DockPanel>
-                                    <TextBlock Text="{Binding Value}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Group}" Opacity="0.55" FontSize="10" Margin="8,0,0,0" />
+                                    </Grid>
+                                    <TextBlock Text="{Binding DisplayValue}" TextWrapping="Wrap" Margin="0,4,0,0"
+                                               Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
                                     <TextBlock Text="{Binding DisplayExplanation}" TextWrapping="Wrap" Opacity="0.6" FontSize="10" Margin="0,2,0,0" />
                                 </StackPanel>
                             </DataTemplate>

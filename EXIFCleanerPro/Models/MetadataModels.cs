@@ -12,6 +12,7 @@ internal sealed record MetadataEntry(
     bool IsSensitive = false)
 {
     public string DisplayName => FriendlyName ?? Tag;
+    public string DisplayValue => string.IsNullOrWhiteSpace(Value) ? "No readable value" : Value;
     public string DisplayExplanation => Explanation ?? $"Technical metadata stored as {Tag}.";
     public string ClipboardText => $"{Group} — {DisplayName}: {Value}";
 }
