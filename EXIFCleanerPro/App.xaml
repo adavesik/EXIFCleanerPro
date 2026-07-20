@@ -1,0 +1,49 @@
+<Application x:Class="EXIFCleanerPro.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:EXIFCleanerPro.Converters"
+             ThemeMode="System">
+    <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <DrawingImage x:Key="AppLogoDrawing">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#157F8C"
+                                     Geometry="M16,1 L28,5 V14 C28,21 23,27 16,31 C9,27 4,21 4,14 V5 Z" />
+                    <GeometryDrawing Brush="White"
+                                     Geometry="M15,8 L17,12 L21,14 L17,16 L15,20 L13,16 L9,14 L13,12 Z" />
+                    <GeometryDrawing Brush="White"
+                                     Geometry="M22,7 L23,9 L25,10 L23,11 L22,13 L21,11 L19,10 L21,9 Z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+        </Style>
+
+        <Style x:Key="NavigationButtonStyle" TargetType="Button">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="Margin" Value="8,2" />
+            <Setter Property="MinHeight" Value="42" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="ToolbarButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+    </Application.Resources>
+</Application>

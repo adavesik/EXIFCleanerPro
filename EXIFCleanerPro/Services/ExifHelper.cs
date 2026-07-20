@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
 namespace EXIFCleanerPro.Services
@@ -56,20 +56,39 @@ namespace EXIFCleanerPro.Services
                 if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
                     throw new NotSupportedException("Only JPG and PNG files are supported for cleaning.");
 
-                using (var image = Image.FromFile(inputFilePath))
+                using (var sourceImage = Image.FromFile(inputFilePath))
                 {
+                    ApplyExifOrientation(sourceImage);
+                    PixelFormat pixelFormat = extension == ".png"
+                        ? PixelFormat.Format32bppArgb
+                        : PixelFormat.Format24bppRgb;
+                    using Bitmap cleanBitmap = new(sourceImage.Width, sourceImage.Height, pixelFormat);
+                    if (sourceImage.HorizontalResolution > 0 && sourceImage.VerticalResolution > 0)
+                    {
+                        cleanBitmap.SetResolution(sourceImage.HorizontalResolution, sourceImage.VerticalResolution);
+                    }
+
+                    using (Graphics graphics = Graphics.FromImage(cleanBitmap))
+                    {
+                        graphics.CompositingMode = CompositingMode.SourceCopy;
+                        graphics.CompositingQuality = CompositingQuality.HighQuality;
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        graphics.DrawImage(sourceImage, new Rectangle(0, 0, cleanBitmap.Width, cleanBitmap.Height));
+                    }
+
                     if (extension == ".jpg" || extension == ".jpeg")
                     {
                         // For JPEG, save with high quality to strip EXIF
                         var encoder = ImageCodecInfo.GetImageEncoders().First(c => c.FormatID == ImageFormat.Jpeg.Guid);
                         var encoderParams = new EncoderParameters(1);
                         encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
-                        image.Save(outputFilePath, encoder, encoderParams);
+                        cleanBitmap.Save(outputFilePath, encoder, encoderParams);
                     }
                     else if (extension == ".png")
                     {
                         // For PNG, save as PNG (EXIF is not standard in PNG, but this strips any metadata)
-                        image.Save(outputFilePath, ImageFormat.Png);
+                        cleanBitmap.Save(outputFilePath, ImageFormat.Png);
                     }
                 }
                 return true;
@@ -77,6 +96,38 @@ namespace EXIFCleanerPro.Services
             catch (Exception ex)
             {
                 throw new Exception($"Error cleaning EXIF data: {ex.Message}", ex);
+            }
+        }
+
+        private static void ApplyExifOrientation(Image image)
+        {
+            const int OrientationPropertyId = 0x0112;
+            if (!image.PropertyIdList.Contains(OrientationPropertyId))
+            {
+                return;
+            }
+
+            PropertyItem? orientationProperty = image.GetPropertyItem(OrientationPropertyId);
+            if (orientationProperty?.Value is null || orientationProperty.Value.Length < 2)
+            {
+                return;
+            }
+
+            ushort orientation = BitConverter.ToUInt16(orientationProperty.Value, 0);
+            RotateFlipType transform = orientation switch
+            {
+                2 => RotateFlipType.RotateNoneFlipX,
+                3 => RotateFlipType.Rotate180FlipNone,
+                4 => RotateFlipType.Rotate180FlipX,
+                5 => RotateFlipType.Rotate90FlipX,
+                6 => RotateFlipType.Rotate90FlipNone,
+                7 => RotateFlipType.Rotate270FlipX,
+                8 => RotateFlipType.Rotate270FlipNone,
+                _ => RotateFlipType.RotateNoneFlipNone
+            };
+            if (transform != RotateFlipType.RotateNoneFlipNone)
+            {
+                image.RotateFlip(transform);
             }
         }
     }

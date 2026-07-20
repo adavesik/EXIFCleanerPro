@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EXIFCleanerPro", "EXIFCleanerPro\EXIFCleanerPro.csproj", "{FB65C3E1-CBC6-4218-9B76-3805B171BCEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EXIFCleanerPro.Tests", "EXIFCleanerPro.Tests\EXIFCleanerPro.Tests.csproj", "{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{FB65C3E1-CBC6-4218-9B76-3805B171BCEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB65C3E1-CBC6-4218-9B76-3805B171BCEB}.Release|x64.ActiveCfg = Release|x64
 		{FB65C3E1-CBC6-4218-9B76-3805B171BCEB}.Release|x64.Build.0 = Release|x64
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{1C39048A-CF52-4AE4-8F17-1EA6F2C505D0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
