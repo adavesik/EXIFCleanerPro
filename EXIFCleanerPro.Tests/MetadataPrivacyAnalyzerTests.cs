@@ -123,6 +123,23 @@ public sealed class MetadataPrivacyAnalyzerTests
         Assert.False(result.Entries[0].IsSensitive);
     }
 
+    [Fact]
+    public void MetadataCategoryFiltersMatchTheirInterpretedEntries()
+    {
+        MetadataInterpretation result = MetadataPrivacyAnalyzer.Interpret(
+        [
+            new MetadataEntry("GPS", "GPS Latitude", "40.4168"),
+            new MetadataEntry("Exif IFD0", "Model", "Camera"),
+            new MetadataEntry("Exif SubIFD", "Date/Time Original", "2026:07:20 12:30:00"),
+            new MetadataEntry("Exif IFD0", "Software", "Editor")
+        ]);
+
+        Assert.Single(result.Entries, entry => entry.MatchesFilter(MetadataFilter.Location));
+        Assert.Single(result.Entries, entry => entry.MatchesFilter(MetadataFilter.Camera));
+        Assert.Single(result.Entries, entry => entry.MatchesFilter(MetadataFilter.Timeline));
+        Assert.Single(result.Entries, entry => entry.MatchesFilter(MetadataFilter.Software));
+    }
+
     private static MetadataResult CreateResult(params MetadataEntry[] raw)
     {
         MetadataInterpretation interpretation = MetadataPrivacyAnalyzer.Interpret(raw);

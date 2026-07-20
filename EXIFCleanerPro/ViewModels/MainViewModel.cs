@@ -87,6 +87,15 @@ internal partial class MainViewModel : ObservableObject
     private string metadataSearchText = string.Empty;
 
     [ObservableProperty]
+    private MetadataFilter selectedMetadataFilter = MetadataFilter.All;
+
+    [ObservableProperty]
+    private bool showAdvancedMetadata;
+
+    [ObservableProperty]
+    private bool hasAdvancedMetadata;
+
+    [ObservableProperty]
     private bool isBusy;
 
     [ObservableProperty]
@@ -136,6 +145,10 @@ internal partial class MainViewModel : ObservableObject
     public bool HasSelectedItem => SelectedItem is not null;
     public bool IsSelectedFolderMode => SelectedOutputMode == OutputMode.SelectedFolder;
     public bool CanOpenOutput => !string.IsNullOrWhiteSpace(lastOutputDirectory) && Directory.Exists(lastOutputDirectory);
+    public bool IsLocationFilterActive => SelectedMetadataFilter == MetadataFilter.Location;
+    public bool IsCameraFilterActive => SelectedMetadataFilter == MetadataFilter.Camera;
+    public bool IsTimelineFilterActive => SelectedMetadataFilter == MetadataFilter.Timeline;
+    public bool IsSoftwareFilterActive => SelectedMetadataFilter == MetadataFilter.Software;
 
     [RelayCommand]
     private void Navigate(NavigationPage page) => CurrentPage = page;
@@ -470,6 +483,10 @@ internal partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void ClearNotification() => NotificationMessage = null;
 
+    [RelayCommand]
+    private void ToggleMetadataFilter(MetadataFilter filter) =>
+        SelectedMetadataFilter = SelectedMetadataFilter == filter ? MetadataFilter.All : filter;
+
     private bool CanModifyQueue() => !IsBusy;
     private bool CanRemoveItems() => !IsBusy && HasSelection;
     private bool CanClean() => !IsBusy && HasSelection;
@@ -655,6 +672,9 @@ internal partial class MainViewModel : ObservableObject
         allMetadataEntries.Clear();
         MetadataEntries.Clear();
         SelectedThumbnail = null;
+        SelectedMetadataFilter = MetadataFilter.All;
+        ShowAdvancedMetadata = false;
+        HasAdvancedMetadata = false;
         OpenMapCommand.NotifyCanExecuteChanged();
         ExportPrivacyReportCommand.NotifyCanExecuteChanged();
 
@@ -666,6 +686,17 @@ internal partial class MainViewModel : ObservableObject
     }
 
     partial void OnMetadataSearchTextChanged(string value) => ApplyMetadataFilter();
+
+    partial void OnSelectedMetadataFilterChanged(MetadataFilter value)
+    {
+        OnPropertyChanged(nameof(IsLocationFilterActive));
+        OnPropertyChanged(nameof(IsCameraFilterActive));
+        OnPropertyChanged(nameof(IsTimelineFilterActive));
+        OnPropertyChanged(nameof(IsSoftwareFilterActive));
+        ApplyMetadataFilter();
+    }
+
+    partial void OnShowAdvancedMetadataChanged(bool value) => ApplyMetadataFilter();
 
     partial void OnIsBusyChanged(bool value)
     {
@@ -701,6 +732,7 @@ internal partial class MainViewModel : ObservableObject
 
             allMetadataEntries.Clear();
             allMetadataEntries.AddRange(metadata.Entries);
+            HasAdvancedMetadata = allMetadataEntries.Any(entry => entry.IsAdvancedOnly);
             ApplyMetadataSummary(item, metadata);
             ApplyMetadataFilter();
         }
@@ -732,6 +764,16 @@ internal partial class MainViewModel : ObservableObject
     private void ApplyMetadataFilter()
     {
         IEnumerable<MetadataEntry> entries = allMetadataEntries;
+        if (!ShowAdvancedMetadata)
+        {
+            entries = entries.Where(entry => !entry.IsAdvancedOnly);
+        }
+
+        if (SelectedMetadataFilter != MetadataFilter.All)
+        {
+            entries = entries.Where(entry => entry.MatchesFilter(SelectedMetadataFilter));
+        }
+
         if (!string.IsNullOrWhiteSpace(MetadataSearchText))
         {
             string search = MetadataSearchText.Trim();

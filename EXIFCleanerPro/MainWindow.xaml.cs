@@ -95,6 +95,21 @@ public partial class MainWindow : Window
         }
     }
 
+    private void OnInspectorMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (sender is not ScrollViewer scrollViewer || scrollViewer.ScrollableHeight <= 0)
+        {
+            return;
+        }
+
+        double targetOffset = Math.Clamp(
+            scrollViewer.VerticalOffset - (e.Delta / 3.0),
+            0,
+            scrollViewer.ScrollableHeight);
+        scrollViewer.ScrollToVerticalOffset(targetOffset);
+        e.Handled = true;
+    }
+
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.O)

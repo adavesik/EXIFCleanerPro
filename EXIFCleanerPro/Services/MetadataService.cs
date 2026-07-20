@@ -24,7 +24,11 @@ internal sealed class MetadataService : IMetadataService
             {
                 string tagName = tag.Name;
                 string value = tag.Description ?? string.Empty;
-                entries.Add(new MetadataEntry(directory.Name, tagName, value));
+                entries.Add(new MetadataEntry(
+                    directory.Name,
+                    tagName,
+                    value,
+                    IsAdvancedOnly: MetadataDisplayPolicy.IsAdvancedOnly(directory.Name, tagName, value)));
 
                 hasCamera |= tagName.Contains("Make", StringComparison.OrdinalIgnoreCase) ||
                              tagName.Contains("Model", StringComparison.OrdinalIgnoreCase) ||

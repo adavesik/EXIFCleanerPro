@@ -28,9 +28,48 @@
         <Geometry x:Key="PlayIcon">M7,4 L20,12 L7,20 Z</Geometry>
         <Geometry x:Key="SearchIcon">M10,3 A7,7 0 1 0 10,17 A7,7 0 1 0 10,3 M15,15 L21,21</Geometry>
 
+        <Style x:Key="FilterChipStyle" TargetType="ToggleButton">
+            <Setter Property="Padding" Value="9,4" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#157F8C" />
+            <Setter Property="Foreground" Value="#157F8C" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="ChipBorder"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ChipBorder" Property="Background" Value="#10157F8C" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ChipBorder" Property="Background" Value="#25157F8C" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="ChipBorder" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <DataTemplate x:Key="InspectorTemplate">
             <Border Style="{StaticResource CardStyle}" Padding="0">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              PanningMode="VerticalOnly"
+                              PreviewMouseWheel="OnInspectorMouseWheel">
                     <StackPanel>
                     <Grid Margin="16,14,16,10">
                         <Grid.ColumnDefinitions>
@@ -118,22 +157,32 @@
                     </Border>
 
                     <WrapPanel Margin="16,4,16,8">
-                        <Border CornerRadius="8" Padding="8,4" Margin="0,0,6,6" BorderThickness="1" BorderBrush="#D45B5B"
-                                Visibility="{Binding SelectedItem.HasGps, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{Binding SelectedItem.GpsBadgeText}" Foreground="#D45B5B" FontWeight="SemiBold" />
-                        </Border>
-                        <Border CornerRadius="8" Padding="8,4" Margin="0,0,6,6" BorderThickness="1" BorderBrush="#157F8C"
-                                Visibility="{Binding SelectedItem.HasCamera, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="Camera" Foreground="#157F8C" />
-                        </Border>
-                        <Border CornerRadius="8" Padding="8,4" Margin="0,0,6,6" BorderThickness="1" BorderBrush="#157F8C"
-                                Visibility="{Binding SelectedItem.HasDate, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="Date &amp; time" Foreground="#157F8C" />
-                        </Border>
-                        <Border CornerRadius="8" Padding="8,4" Margin="0,0,6,6" BorderThickness="1" BorderBrush="#157F8C"
-                                Visibility="{Binding SelectedItem.HasSoftware, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="Software" Foreground="#157F8C" />
-                        </Border>
+                        <ToggleButton Style="{StaticResource FilterChipStyle}"
+                                      Content="{Binding SelectedItem.GpsBadgeText}"
+                                      Foreground="#D45B5B" BorderBrush="#D45B5B"
+                                      IsChecked="{Binding IsLocationFilterActive, Mode=OneWay}"
+                                      Command="{Binding ToggleMetadataFilterCommand}"
+                                      CommandParameter="{x:Static models:MetadataFilter.Location}"
+                                      ToolTip="Filter location metadata; click again to clear"
+                                      Visibility="{Binding SelectedItem.HasGps, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ToggleButton Style="{StaticResource FilterChipStyle}" Content="Camera"
+                                      IsChecked="{Binding IsCameraFilterActive, Mode=OneWay}"
+                                      Command="{Binding ToggleMetadataFilterCommand}"
+                                      CommandParameter="{x:Static models:MetadataFilter.Camera}"
+                                      ToolTip="Filter camera metadata; click again to clear"
+                                      Visibility="{Binding SelectedItem.HasCamera, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ToggleButton Style="{StaticResource FilterChipStyle}" Content="Date &amp; time"
+                                      IsChecked="{Binding IsTimelineFilterActive, Mode=OneWay}"
+                                      Command="{Binding ToggleMetadataFilterCommand}"
+                                      CommandParameter="{x:Static models:MetadataFilter.Timeline}"
+                                      ToolTip="Filter timeline metadata; click again to clear"
+                                      Visibility="{Binding SelectedItem.HasDate, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ToggleButton Style="{StaticResource FilterChipStyle}" Content="Software"
+                                      IsChecked="{Binding IsSoftwareFilterActive, Mode=OneWay}"
+                                      Command="{Binding ToggleMetadataFilterCommand}"
+                                      CommandParameter="{x:Static models:MetadataFilter.Software}"
+                                      ToolTip="Filter software metadata; click again to clear"
+                                      Visibility="{Binding SelectedItem.HasSoftware, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <Button Content="Show on map" Command="{Binding OpenMapCommand}" Padding="8,4" Margin="0,0,6,6"
                                 Visibility="{Binding SelectedItem.HasMap, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </WrapPanel>
@@ -146,6 +195,12 @@
                               StrokeThickness="1.5" Width="16" Height="16" Stretch="Uniform"
                               HorizontalAlignment="Left" Margin="9,0,0,0" IsHitTestVisible="False" />
                     </Grid>
+
+                    <CheckBox Margin="16,0,16,8"
+                              Content="Show advanced technical metadata"
+                              IsChecked="{Binding ShowAdvancedMetadata}"
+                              Visibility="{Binding HasAdvancedMetadata, Converter={StaticResource BooleanToVisibilityConverter}}"
+                              ToolTip="Includes ICC profile curves, lookup tables, and unusually long raw values" />
 
                     <ListView Margin="16,0"
                               ItemsSource="{Binding MetadataEntries}"

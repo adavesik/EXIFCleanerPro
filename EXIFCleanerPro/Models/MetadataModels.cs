@@ -9,7 +9,8 @@ internal sealed record MetadataEntry(
     string? FriendlyName = null,
     string? Explanation = null,
     PrivacyCategory? PrivacyCategory = null,
-    bool IsSensitive = false)
+    bool IsSensitive = false,
+    bool IsAdvancedOnly = false)
 {
     public string DisplayName => FriendlyName ?? Tag;
     public string DisplayValue => string.IsNullOrWhiteSpace(Value) ? "No readable value" : Value;
@@ -23,6 +24,20 @@ internal sealed record MetadataEntry(
         DisplayName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
         DisplayExplanation.Contains(search, StringComparison.OrdinalIgnoreCase) ||
         (PrivacyCategory?.ToString().Contains(search, StringComparison.OrdinalIgnoreCase) ?? false);
+
+    public bool MatchesFilter(MetadataFilter filter) => filter switch
+    {
+        MetadataFilter.All => true,
+        MetadataFilter.Location => PrivacyCategory == EXIFCleanerPro.PrivacyCategory.Location,
+        MetadataFilter.Camera => PrivacyCategory == EXIFCleanerPro.PrivacyCategory.Device ||
+                                 ContainsAny(Tag, "ISO", "aperture", "f-number", "exposure bias", "exposure program", "metering", "flash", "focal length", "white balance"),
+        MetadataFilter.Timeline => PrivacyCategory == EXIFCleanerPro.PrivacyCategory.Timeline,
+        MetadataFilter.Software => PrivacyCategory == EXIFCleanerPro.PrivacyCategory.EditingHistory,
+        _ => throw new ArgumentOutOfRangeException(nameof(filter))
+    };
+
+    private static bool ContainsAny(string value, params string[] candidates) =>
+        candidates.Any(candidate => value.Contains(candidate, StringComparison.OrdinalIgnoreCase));
 }
 
 internal sealed record MetadataResult(
@@ -108,4 +123,13 @@ internal enum PrivacyRiskLevel
     Medium,
     High,
     Critical
+}
+
+public enum MetadataFilter
+{
+    All,
+    Location,
+    Camera,
+    Timeline,
+    Software
 }
